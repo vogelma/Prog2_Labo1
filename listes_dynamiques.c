@@ -4,7 +4,8 @@
  Auteur(s)      :
  Date creation  : 22.04.2021
 
- Description    :
+ Description    : Librairie permettant la gestion de listes doublement chaînées
+                  non circulaires
 
  Remarque(s)    : -
 
@@ -15,8 +16,94 @@
 #include <stdlib.h>
 #include "listes_dynamiques.h"
 
-Liste *initialiser() {
-    Liste* liste = malloc(sizeof(Liste));
+//true si vide, false si pas la même taille
+bool sontEgales(const Liste *liste1, const Liste *liste2) {
+    if (estVide(liste1) && estVide(liste2))
+        return true;
+    if (longueur(liste1) != longueur(liste2))
+        return false;
+
+    Element *suivant1 = liste1->tete;
+    Element *suivant2 = liste2->tete;
+
+    while (suivant1 != NULL) {
+        if (suivant1->info != suivant2->info)
+            return false;
+        suivant1 = suivant1->suivant;
+        suivant2 = suivant2->suivant;
+    }
+
+    return true;
+}
+
+Status insererEnTete(Liste *liste, const Info *info) {
+
+    Element* newElement = malloc(sizeof(Element));
+    if(newElement == NULL)
+        return MEMOIRE_INSUFFISANTE;
+
+    //stocke le dernier élèment de la liste
+    Element *premier = liste->tete;
+    //pointe sur le nouveau élèment
+    liste->tete->precedent = newElement;
+    liste->tete = newElement;
+    liste->tete->info = info;
+
+    //fait le lien avec le dernier élèment
+    liste->tete->suivant = premier;
+
+    return OK;
+}
+
+Status insererEnQueue(Liste *liste, const Info *info) {
+
+    Element* newElement = malloc(sizeof(Element));
+    if(newElement == NULL)
+        return MEMOIRE_INSUFFISANTE;
+
+    //stocke le dernier élèment de la liste
+    Element *dernier = liste->queue;
+    //pointe sur le nouveau élèment
+    liste->queue->suivant = newElement;
+    liste->queue = newElement;
+    liste->queue->info = info;
+
+    //fait le lien avec le dernier élèment
+    liste->queue->precedent = dernier;
+
+    return OK;
+
+}
+
+void vider(Liste *liste, size_t position) {
+
+    if(position < longueur(liste)) {
+        Element *suivant = liste->tete;
+
+        if (position != 0) {
+            for (size_t i = 0; i > position - 1; ++i) {
+                suivant = suivant->suivant;
+            }
+            //efface le pointeur sur le prochain élèment qui sera effacé plus tard
+            suivant->suivant = NULL;
+            //update la queue de la liste
+            liste->queue = suivant;
+            //premier élèment à supprimer
+            suivant = suivant->suivant;
+        }
+
+
+        while (suivant != NULL) {
+            suivant = suivant->suivant;
+            free(suivant->precedent);
+        }
+    }
+
+}
+
+
+Liste* initialiser() { // Pascal
+    Liste *liste = malloc(sizeof(Liste));
 
     liste->tete = NULL;
     liste->queue = NULL;
@@ -64,13 +151,9 @@ void supprimerSelonCritere(Liste *liste, bool (*critere)(size_t, const Info *)) 
 }
 
 
-
-// ------------------------------------------------------------------------------
 // Renvoie true si liste est vide, false sinon.
-bool estVide(const Liste* liste) {
-    if(liste->tete == NULL)
-        return true;
-    else
-        return false;
+bool estVide(const Liste *liste) {
+    return (liste->tete == NULL);
+
 }
-// ------------------------------------------------------------------------------
+
