@@ -12,8 +12,12 @@
  -----------------------------------------------------------------------------------
 */
 #include <stdio.h>
+#include "listes_dynamiques.h"
 
 int main() {
-    printf("Hello, World!\n");
+    Liste* ma_liste = initialiser();
+
+    printf("Longueur : %ld\n", longueur(ma_liste));
+
     return 0;
 }

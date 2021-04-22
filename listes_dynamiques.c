@@ -11,3 +11,33 @@
  Compilateur    : Mingw-w64 gcc 8.1.0
  -----------------------------------------------------------------------------------
 */
+
+#include "listes_dynamiques.h"
+#include <stdlib.h>
+
+Liste *initialiser() { // Pascal
+    Liste* liste = malloc(sizeof(Liste));
+
+    liste->tete = NULL;
+    liste->queue = NULL;
+
+    return liste;
+}
+
+size_t longueur(const Liste *liste) { // Pascal
+    // if (estVide(liste)) return 0;
+
+    size_t longueur = 0;
+    Element* suivant = liste->tete;
+
+    while (suivant != NULL) {
+        ++longueur;
+        suivant = suivant->suivant;
+    }
+
+    return longueur;
+}
+
+void supprimerSelonCritere(Liste *liste, bool (*critere)(size_t, const Info *)) { // Pascal
+
+}
