@@ -42,15 +42,18 @@ Status insererEnTete(Liste *liste, const Info *info) {
     if(newElement == NULL)
         return MEMOIRE_INSUFFISANTE;
 
-    //stocke le dernier élèment de la liste
-    Element *premier = liste->tete;
-    //pointe sur le nouveau élèment
-    liste->tete->precedent = newElement;
-    liste->tete = newElement;
-    liste->tete->info = info;
+    //ajout des attribut de l'élèment
+    newElement->info = info;
+    newElement->precedent = NULL;
+    newElement->suivant = liste->tete;
 
-    //fait le lien avec le dernier élèment
-    liste->tete->suivant = premier;
+    //si un élèment est déjà dans la liste
+    if(!estVide(liste))
+        liste->queue->precedent = newElement;
+    else
+        liste->tete = liste->queue;
+    //maj de la tete de la liste
+    liste->tete = newElement;
 
     return OK;
 }
@@ -58,30 +61,33 @@ Status insererEnTete(Liste *liste, const Info *info) {
 Status insererEnQueue(Liste *liste, const Info *info) {
 
     Element* newElement = malloc(sizeof(Element));
-    if(newElement == NULL)
+    if(!newElement)
         return MEMOIRE_INSUFFISANTE;
 
-    //stocke le dernier élèment de la liste
-    Element *dernier = liste->queue;
-    //pointe sur le nouveau élèment
-    liste->queue->suivant = newElement;
+    //ajout des attribut de l'élèment
+    newElement->info = info;
+    newElement->precedent = liste->queue;
+    newElement->suivant = NULL;
+
+    //si un élèment est déjà dans la liste
+    if(!estVide(liste))
+        liste->queue->suivant = newElement;
+    else
+        liste->tete = liste->queue;
+    //maj de la queue de la liste
     liste->queue = newElement;
-    liste->queue->info = info;
-
-    //fait le lien avec le dernier élèment
-    liste->queue->precedent = dernier;
-
     return OK;
 
 }
 
 void vider(Liste *liste, size_t position) {
 
+    //rien est fait si la position se trouve après la fin de la liste
     if(position < longueur(liste)) {
         Element *suivant = liste->tete;
 
         if (position != 0) {
-            for (size_t i = 0; i > position - 1; ++i) {
+            for (size_t i = 0; i < position - 1; ++i) {
                 suivant = suivant->suivant;
             }
             //efface le pointeur sur le prochain élèment qui sera effacé plus tard
@@ -97,12 +103,17 @@ void vider(Liste *liste, size_t position) {
             suivant = suivant->suivant;
             free(suivant->precedent);
         }
+
+        if(position == 0){
+            liste->tete = NULL;
+            liste->queue = NULL;
+        }
     }
 
 }
 
 
-Liste* initialiser() { // Pascal
+Liste* initialiser() {
     Liste *liste = malloc(sizeof(Liste));
 
     liste->tete = NULL;
