@@ -12,8 +12,8 @@
  -----------------------------------------------------------------------------------
 */
 
-#include "listes_dynamiques.h"
 #include <stdlib.h>
+#include "listes_dynamiques.h"
 
 Liste *initialiser() { // Pascal
     Liste* liste = malloc(sizeof(Liste));
@@ -41,3 +41,13 @@ size_t longueur(const Liste *liste) { // Pascal
 void supprimerSelonCritere(Liste *liste, bool (*critere)(size_t, const Info *)) { // Pascal
 
 }
+
+// ------------------------------------------------------------------------------
+// Renvoie true si liste est vide, false sinon.
+bool estVide(const Liste* liste) {
+    if(liste->tete == NULL)
+        return true;
+    else
+        return false;
+}
+// ------------------------------------------------------------------------------

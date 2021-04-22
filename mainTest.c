@@ -19,5 +19,6 @@ int main() {
 
     printf("Longueur : %ld\n", longueur(ma_liste));
 
+
     return 0;
 }
