@@ -1,11 +1,11 @@
 /*
  -----------------------------------------------------------------------------------
  Nom du fichier : listes_dynamiques.c
- Auteur(s)      :
+ Auteur(s)      : Pascal Perrenoud, Pablo Urizar, Maëlle Vogel
  Date creation  : 22.04.2021
 
- Description    : Librairie permettant la gestion de listes doublement chaînées
-                  non circulaires
+ Description    : implémentation de l'librairie permettant la gestion de
+                  listes doublement chaînées non circulaires
 
  Remarque(s)    : -
 
@@ -46,13 +46,17 @@ Status insererEnTete(Liste *liste, const Info *info) {
     //ajout des attribut de l'élèment
     newElement->info = info;
     newElement->precedent = NULL;
-    newElement->suivant = liste->tete;
+
 
     //si un élèment est déjà dans la liste
-    if(!estVide(liste))
-        liste->queue->precedent = newElement;
-    else
-        liste->tete = liste->queue;
+    if(!estVide(liste)) {
+        newElement->suivant = liste->tete;
+        liste->tete->precedent = newElement;
+    }
+    else{
+        newElement->suivant = NULL;
+        liste->queue = newElement;
+    }
     //maj de la tete de la liste
     liste->tete = newElement;
 
@@ -67,16 +71,21 @@ Status insererEnQueue(Liste *liste, const Info *info) {
 
     //ajout des attribut de l'élèment
     newElement->info = info;
-    newElement->precedent = liste->queue;
     newElement->suivant = NULL;
 
     //si un élèment est déjà dans la liste
-    if(!estVide(liste))
+    if(!estVide(liste)) {
+        newElement->precedent = liste->queue;
         liste->queue->suivant = newElement;
-    else
-        liste->tete = liste->queue;
+    }
+    else {
+        newElement->precedent = NULL;
+        liste->tete = newElement;
+
+    }
     //maj de la queue de la liste
     liste->queue = newElement;
+
     return OK;
 
 }
@@ -87,21 +96,28 @@ void vider(Liste *liste, size_t position) {
     if(position < longueur(liste)) {
         Element *suivant = liste->tete;
 
+        //avance sur la bonne position
         if (position != 0) {
             for (size_t i = 0; i < position - 1; ++i) {
                 suivant = suivant->suivant;
             }
-            //efface le pointeur sur le prochain élèment qui sera effacé plus tard
-            suivant->suivant = NULL;
-            //update la queue de la liste
-            liste->queue = suivant;
+
+            //variable temporel qui stocke le dernier élèment de la liste
+            Element *tmp = suivant;
+
             //premier élèment à supprimer
             suivant = suivant->suivant;
+            //efface le pointeur sur le prochain élèment qui sera effacé plus tard
+            tmp->suivant = NULL;
+            //update la queue de la liste
+            liste->queue = tmp;
+
         }
 
         while (suivant != NULL) {
+            Element *tmp = suivant;
             suivant = suivant->suivant;
-            free(suivant->precedent);
+            free(tmp);
         }
 
         if(position == 0){
@@ -181,12 +197,12 @@ void afficher(const Liste* liste, Mode mode) {
         } else if (mode == BACKWARD) {
             elemActuel = liste->queue;
             while (elemActuel != NULL) {
-                printf("%d ", elemActuel->info);
+                printf("%d", elemActuel->info);
                 if (elemActuel != liste->tete)
-                    printf(", ");;
+                    printf(", ");
                 elemActuel = elemActuel->precedent;
             }
         }
     }
-    printf("]");
+    printf("]\n");
 }
