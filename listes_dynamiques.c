@@ -71,6 +71,7 @@ Status insererEnQueue(Liste *liste, const Info *info) {
 
     //ajout des attribut de l'élèment
     newElement->info = info;
+    newElement->precedent = liste->queue;
     newElement->suivant = NULL;
 
     //si un élèment est déjà dans la liste
@@ -205,4 +206,64 @@ void afficher(const Liste* liste, Mode mode) {
         }
     }
     printf("]\n");
+}
+
+Status supprimerEnTete(Liste* liste, Info* info) {
+    if (estVide(liste))
+        return LISTE_VIDE;
+
+    // Renvoie de l'élément stocké à l'en-tête
+    *info = liste->tete->info;
+
+    // Plusieurs éléments
+    /*
+    if (liste->tete) {
+        liste->tete = NULL;
+        liste->queue = NULL;
+    } else
+        liste->queue = NULL;
+    */
+
+    if (longueur(liste) != 1) {
+        liste->tete = liste->tete->suivant;
+        liste->tete->precedent = NULL;
+    } else {
+        // Un seul élément
+        liste->tete = NULL;
+        liste->queue = NULL;
+    }
+
+    free(liste->tete);
+
+    return OK;
+}
+
+Status supprimerEnQueue(Liste* liste, Info* info) {
+    if (estVide(liste))
+        return LISTE_VIDE;
+
+    // Renvoie de l'élément stocké à l'en-queue
+    *info = liste->queue->info;
+
+    // Plusieurs éléments
+    /*
+    if (liste->queue) {
+        liste->tete = NULL;
+        liste->queue = NULL;
+    } else
+        liste->tete = NULL;
+    */
+
+    if (longueur(liste) != 1) {
+        liste->queue = liste->queue->precedent;
+        liste->queue->suivant = NULL;
+    } else {
+        // Un seul élément
+        liste->tete = NULL;
+        liste->queue = NULL;
+    }
+
+    free(liste->queue);
+
+    return OK;
 }

@@ -58,6 +58,7 @@ int main() {
     printf("premiere liste apres suppression des nombres pairs: ");
     afficher(ma_liste, FORWARD);
 
+
     // Supprime un élément en tête de liste
     supprimerEnTete(ma_liste, info); // Supprime 1
     if (info != 1) {
@@ -143,7 +144,10 @@ int main() {
     return 0;
 }
 
-/*
+//    Info* infoTest = 0;
+//    supprimerEnTete(ma_liste, infoTest);
+
+    /*
  * Output prévu :
  *
 La liste est vide !
