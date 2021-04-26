@@ -42,6 +42,7 @@ int main() {
     // Doit afficher "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
     afficher(ma_liste, FORWARD);
 
+    /*
     // Supprime les valeurs paires
     supprimerSelonCritere(ma_liste, est_pair);
 
@@ -94,6 +95,8 @@ int main() {
     free(info);
 
 
+
+    */
     return 0;
 }
 

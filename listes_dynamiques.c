@@ -14,6 +14,7 @@
 */
 
 #include <stdlib.h>
+#include <stdio.h>
 #include "listes_dynamiques.h"
 
 //true si vide, false si pas la même taille
@@ -98,7 +99,6 @@ void vider(Liste *liste, size_t position) {
             suivant = suivant->suivant;
         }
 
-
         while (suivant != NULL) {
             suivant = suivant->suivant;
             free(suivant->precedent);
@@ -111,7 +111,6 @@ void vider(Liste *liste, size_t position) {
     }
 
 }
-
 
 Liste* initialiser() {
     Liste *liste = malloc(sizeof(Liste));
@@ -161,10 +160,33 @@ void supprimerSelonCritere(Liste *liste, bool (*critere)(size_t, const Info *)) 
     }
 }
 
-
-// Renvoie true si liste est vide, false sinon.
 bool estVide(const Liste *liste) {
     return (liste->tete == NULL);
 
 }
 
+void afficher(const Liste* liste, Mode mode) {
+    Element* elemActuel;
+
+    printf("[");
+    if (!estVide(liste)) {
+        if (mode == FORWARD) {
+            elemActuel = liste->tete;
+            while (elemActuel != NULL) {
+                printf("%d", elemActuel->info);
+                if (elemActuel != liste->queue)
+                    printf(", ");
+                elemActuel = elemActuel->suivant;
+            }
+        } else if (mode == BACKWARD) {
+            elemActuel = liste->queue;
+            while (elemActuel != NULL) {
+                printf("%d ", elemActuel->info);
+                if (elemActuel != liste->tete)
+                    printf(", ");;
+                elemActuel = elemActuel->precedent;
+            }
+        }
+    }
+    printf("]");
+}
