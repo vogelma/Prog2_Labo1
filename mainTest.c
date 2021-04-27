@@ -25,21 +25,20 @@ int main() {
     Liste* ma_liste = initialiser();
     Info info = 0;
 
-    // Doit afficher "La liste est vide !"
     if (estVide(ma_liste)) {
         printf("La liste est vide !\n");
     } else {
-        printf("La liste contient %zu element(s)\n", longueur(ma_liste));
+        printf("La liste contient %llu element(s)\n", longueur(ma_liste));
     }
 
-    // Remplit la liste avec les valeurs [1 à 10]
+    //Remplit la liste avec les valeurs [1 à 10]
     for (Info i = 1; i <= 10; ++i) {
         info = i;
         insererEnQueue(ma_liste, info);
     }
 
-    // Doit afficher "Longueur : 10"
-    printf("Longueur de la premiere liste : %zu\n", longueur(ma_liste));
+
+    printf("Longueur de la premiere liste : %llu\n", longueur(ma_liste));
 
     printf("premiere liste de tete a queue: ");
     afficher(ma_liste, FORWARD);
@@ -47,24 +46,24 @@ int main() {
     printf("premiere liste de queue a tete: ");
     afficher(ma_liste, BACKWARD);
 
-    printf("\n-----------TEST-SUPPRESSION-------------\n\n");
+    printf("\n-----------TEST-SUPPRESSION------------------------------------\n\n");
 
 
-    // Supprime les valeurs paires
+    //Supprime les valeurs paires
     supprimerSelonCritere(ma_liste, est_pair);
 
     printf("premiere liste apres suppression des nombres pairs: ");
     afficher(ma_liste, FORWARD);
 
 
-    // Supprime un élément en tête de liste
-    supprimerEnTete(ma_liste, &info); // Supprime 1
+    //Supprime un élément en tête de liste
+    supprimerEnTete(ma_liste, &info); //Supprime 1
     if (info != 1) {
-        printf("Info aurait dû valoir 1 ! Et non pas %d\n", info);
+        printf("Info aurait du valoir 1 ! Et non pas %d\n", info);
     }
 
-    // Supprime un élément en queue de liste
-    supprimerEnQueue(ma_liste, &info); // Supprime 9
+    //Supprime un élément en queue de liste
+    supprimerEnQueue(ma_liste, &info); //Supprime 9
     if (info != 9) {
         printf("Info aurait du valoir 9 ! Et non pas %d\n", info);
     }
@@ -72,19 +71,17 @@ int main() {
     printf("premiere liste apres suppression de deux elements: ");
     afficher(ma_liste, FORWARD);
 
-    // Insère un élément en tête de liste
+    //Insère un élément en tête de liste
     info = 0;
     insererEnTete(ma_liste, info);
 
     printf("premiere liste de queue a tete: ");
-    // Doit afficher "[7, 5, 3, 0]"
     afficher(ma_liste, BACKWARD);
 
-    // Doit afficher "Longueur : 4"
-    printf("Longueur : %zu\n", longueur(ma_liste));
+    printf("Longueur : %llu\n", longueur(ma_liste));
 
-    printf("\n-----------TEST-EGAUX-------------\n\n");
-    // Ajoute les nombres impairs jusqu'à 7 pour tester l'équalité des listes
+    printf("\n-----------TEST-EGAUX------------------------------------------\n\n");
+    //Ajoute les nombres impairs jusqu'à 7 pour tester l'équalité des listes
     Liste *ma_deuxieme_liste = initialiser();
     info = 0;
     insererEnQueue(ma_deuxieme_liste, info);
@@ -95,11 +92,10 @@ int main() {
     info = 7;
     insererEnQueue(ma_deuxieme_liste, info);
 
-    printf("Est ce que les deux listes suivantes sont équales?\n");
+    printf("Est ce que les deux listes suivantes sont equales?\n");
     afficher(ma_liste, FORWARD);
     afficher(ma_deuxieme_liste, FORWARD);
 
-    // Doit afficher "Les deux listes sont egales"
     if (sontEgales(ma_liste, ma_deuxieme_liste)) {
         printf("Les deux listes sont egales\n");
         info = 9;
@@ -108,7 +104,7 @@ int main() {
         printf("Les deux listes ne sont  pas egales\n");
     }
 
-    printf("\nEst ce que les deux listes suivantes sont équales après l'ajout d'un nouveaux élèment?\n");
+    printf("\nEst ce que les deux listes suivantes sont équales après l'ajout d'un nouvel element?\n");
     afficher(ma_liste, BACKWARD);
     afficher(ma_deuxieme_liste, BACKWARD);
 
@@ -118,7 +114,7 @@ int main() {
         printf("Les deux listes ne sont  pas egales\n");
     }
 
-    printf("\n-----------TEST-VIDER-------------\n\n");
+    printf("\n-----------TEST-VIDER------------------------------------------\n\n");
 
     printf("deuxieme liste avant suppression: ");
     afficher(ma_deuxieme_liste, FORWARD);
@@ -130,7 +126,7 @@ int main() {
     vider(ma_liste, 0);
     vider(ma_deuxieme_liste, 0);
 
-    printf("\n-------suppression complete--------\n");
+    printf("\n-------suppression-complete------------------------------------\n");
     printf("les deux listes apres suppression complete: \n");
 
     afficher(ma_liste, FORWARD);
@@ -140,7 +136,7 @@ int main() {
     free(ma_liste);
     free(ma_deuxieme_liste);
 
-    printf("\n-----------FIN-TEST-------------");
+    printf("\n-----------FIN-TEST-------------------------------------------");
 
     return 0;
 }
