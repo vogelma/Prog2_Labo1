@@ -15,14 +15,14 @@
 #include <stdlib.h>
 #include "listes_dynamiques.h"
 
-bool est_pair(size_t position, const Info *info) {
-    return !(*info % 2);
+bool est_pair(size_t position, const Info* info) {
+    return (*info % 2 == 0);
 }
 
 int main() {
 
     printf("-----------TEST-INITIALISATION-INSERTION-AFFICHAGE-------------\n\n");
-    Liste *ma_liste = initialiser();
+    Liste* ma_liste = initialiser();
     Info info = 0;
 
     // Doit afficher "La liste est vide !"
@@ -42,11 +42,9 @@ int main() {
     printf("Longueur de la premiere liste : %zu\n", longueur(ma_liste));
 
     printf("premiere liste de tete a queue: ");
-    // Doit afficher "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
     afficher(ma_liste, FORWARD);
 
     printf("premiere liste de queue a tete: ");
-    // Doit afficher "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
     afficher(ma_liste, BACKWARD);
 
     printf("\n-----------TEST-SUPPRESSION-------------\n\n");
@@ -60,13 +58,13 @@ int main() {
 
 
     // Supprime un élément en tête de liste
-    supprimerEnTete(ma_liste, info); // Supprime 1
+    supprimerEnTete(ma_liste, &info); // Supprime 1
     if (info != 1) {
         printf("Info aurait dû valoir 1 ! Et non pas %d\n", info);
     }
 
     // Supprime un élément en queue de liste
-    supprimerEnQueue(ma_liste, info); // Supprime 9
+    supprimerEnQueue(ma_liste, &info); // Supprime 9
     if (info != 9) {
         printf("Info aurait du valoir 9 ! Et non pas %d\n", info);
     }
@@ -98,8 +96,9 @@ int main() {
     insererEnQueue(ma_deuxieme_liste, info);
 
     printf("Est ce que les deux listes suivantes sont équales?\n");
-    afficher(ma_liste, BACKWARD);
+    afficher(ma_liste, FORWARD);
     afficher(ma_deuxieme_liste, FORWARD);
+
     // Doit afficher "Les deux listes sont egales"
     if (sontEgales(ma_liste, ma_deuxieme_liste)) {
         printf("Les deux listes sont egales\n");
@@ -110,6 +109,9 @@ int main() {
     }
 
     printf("\nEst ce que les deux listes suivantes sont équales après l'ajout d'un nouveaux élèment?\n");
+    afficher(ma_liste, BACKWARD);
+    afficher(ma_deuxieme_liste, BACKWARD);
+
     if (sontEgales(ma_liste, ma_deuxieme_liste)) {
         printf("Les deux listes sont egales\n");
     } else {
@@ -120,8 +122,9 @@ int main() {
 
     printf("deuxieme liste avant suppression: ");
     afficher(ma_deuxieme_liste, FORWARD);
+
     vider(ma_deuxieme_liste, 2);
-    printf("deuxieme liste apres suppression partielle: ");
+    printf("deuxieme liste apres suppression depuis la position 2: ");
     afficher(ma_deuxieme_liste, FORWARD);
 
     vider(ma_liste, 0);
@@ -130,10 +133,8 @@ int main() {
     printf("\n-------suppression complete--------\n");
     printf("les deux listes apres suppression complete: \n");
 
-    // Doit afficher "[]"
     afficher(ma_liste, FORWARD);
 
-    // Doit afficher "[]"
     afficher(ma_deuxieme_liste, FORWARD);
 
     free(ma_liste);
@@ -144,21 +145,3 @@ int main() {
     return 0;
 }
 
-//    Info* infoTest = 0;
-//    supprimerEnTete(ma_liste, infoTest);
-
-    /*
- * Output prévu :
- *
-La liste est vide !
-Longueur : 10
-[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-[7, 5, 3, 0]
-Longueur : 4
-Les deux listes sont egales
-[0, 3, 5, 7]
-[0, 3]
-[]
-[]
- *
- */

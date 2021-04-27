@@ -4,7 +4,7 @@
  Auteur(s)      : Pascal Perrenoud, Pablo Urizar, Maëlle Vogel
  Date creation  : 22.04.2021
 
- Description    : implémentation de l'librairie permettant la gestion de
+ Description    : implémentation de la librairie permettant la gestion de
                   listes doublement chaînées non circulaires
 
  Remarque(s)    : -
@@ -18,14 +18,14 @@
 #include "listes_dynamiques.h"
 
 //true si vide, false si pas la même taille
-bool sontEgales(const Liste *liste1, const Liste *liste2) {
+bool sontEgales(const Liste* liste1, const Liste* liste2) {
     if (estVide(liste1) && estVide(liste2))
         return true;
     if (longueur(liste1) != longueur(liste2))
         return false;
 
-    Element *suivant1 = liste1->tete;
-    Element *suivant2 = liste2->tete;
+    Element* suivant1 = liste1->tete;
+    Element* suivant2 = liste2->tete;
 
     while (suivant1 != NULL) {
         if (suivant1->info != suivant2->info)
@@ -37,7 +37,7 @@ bool sontEgales(const Liste *liste1, const Liste *liste2) {
     return true;
 }
 
-Status insererEnTete(Liste *liste, const Info *info) {
+Status insererEnTete(Liste* liste, const Info *info) {
 
     Element* newElement = malloc(sizeof(Element));
     if(newElement == NULL)
@@ -53,7 +53,7 @@ Status insererEnTete(Liste *liste, const Info *info) {
         newElement->suivant = liste->tete;
         liste->tete->precedent = newElement;
     }
-    else{
+    else {
         newElement->suivant = NULL;
         liste->queue = newElement;
     }
@@ -63,7 +63,7 @@ Status insererEnTete(Liste *liste, const Info *info) {
     return OK;
 }
 
-Status insererEnQueue(Liste *liste, const Info *info) {
+Status insererEnQueue(Liste* liste, const Info *info) {
 
     Element* newElement = malloc(sizeof(Element));
     if(!newElement)
@@ -91,39 +91,15 @@ Status insererEnQueue(Liste *liste, const Info *info) {
 
 }
 
-void vider(Liste *liste, size_t position) {
+void vider(Liste* liste, size_t position) {
 
     //rien est fait si la position se trouve après la fin de la liste
     if(position < longueur(liste)) {
-        Element *suivant = liste->tete;
 
-        //avance sur la bonne position
-        if (position != 0) {
-            for (size_t i = 0; i < position - 1; ++i) {
-                suivant = suivant->suivant;
-            }
-
-            //variable temporel qui stocke le dernier élèment de la liste
-            Element *tmp = suivant;
-
-            //premier élèment à supprimer
-            suivant = suivant->suivant;
-            //efface le pointeur sur le prochain élèment qui sera effacé plus tard
-            tmp->suivant = NULL;
-            //update la queue de la liste
-            liste->queue = tmp;
-
-        }
-
-        while (suivant != NULL) {
-            Element *tmp = suivant;
-            suivant = suivant->suivant;
-            free(tmp);
-        }
-
-        if(position == 0){
-            liste->tete = NULL;
-            liste->queue = NULL;
+        Info tmp = 0;
+        //supprime la queue jusqu'à atteindre la position
+        for(size_t i = longueur(liste); i > position ; --i){
+            supprimerEnQueue(liste, &tmp);
         }
     }
 
@@ -144,6 +120,7 @@ size_t longueur(const Liste *liste) {
     size_t longueur = 0;
     Element* suivant = liste->tete;
 
+    //incrémente tant qu'il y a un suivant
     while (suivant != NULL) {
         ++longueur;
         suivant = suivant->suivant;
@@ -152,33 +129,42 @@ size_t longueur(const Liste *liste) {
     return longueur;
 }
 
-void supprimerSelonCritere(Liste *liste, bool (*critere)(size_t, const Info *)) {
-    if (estVide(liste)) return;
+void supprimerSelonCritere(Liste *liste, bool (*critere)(size_t, const Info* )) {
+    if (!estVide(liste)) {
 
-    size_t position = 0;
-    Element* precedent = NULL;
-    Element* element = liste->tete;
-    Element* suivant = NULL;
+        size_t position = 0;
+        Element* precedent = NULL;
+        Element* element = liste->tete;
+        Element* suivant = NULL;
 
-    while (element != NULL) {
-        precedent = element->precedent;
-        suivant = element->suivant;
-        if (critere(position, &(element->info))) {
-            free(element);
-            if (precedent != NULL) {
-                precedent->suivant = suivant;
+        while (element != NULL) {
+            precedent = element->precedent;
+            suivant = element->suivant;
+            if (critere(position, &(element->info))) {
+                if (precedent != NULL) {
+                    precedent->suivant = suivant;
+                }
+                if (suivant != NULL) {
+                    suivant->precedent = precedent;
+                }
+                //si la tete ou la queue est supprimée il faut mettre à jour la liste
+                if (element == liste->queue){
+                    liste->queue = precedent;
+                }
+                if (element == liste->tete){
+                    liste->tete = suivant;
+                }
+
+                free(element);
             }
-            if (suivant != NULL) {
-                suivant->precedent = precedent;
-            }
+            element = suivant;
+            ++position;
         }
-        element = suivant;
-        ++position;
     }
 }
 
 bool estVide(const Liste *liste) {
-    return (liste->tete == NULL);
+    return (!(liste->tete));
 
 }
 
@@ -212,28 +198,21 @@ Status supprimerEnTete(Liste* liste, Info* info) {
     if (estVide(liste))
         return LISTE_VIDE;
 
-    // Renvoie de l'élément stocké à l'en-tête
+    // Renvoie de l'élément stocké en tête
     *info = liste->tete->info;
 
-    // Plusieurs éléments
-    /*
-    if (liste->tete) {
-        liste->tete = NULL;
-        liste->queue = NULL;
-    } else
-        liste->queue = NULL;
-    */
 
+    Element* tmp =  liste->tete;
     if (longueur(liste) != 1) {
         liste->tete = liste->tete->suivant;
         liste->tete->precedent = NULL;
     } else {
-        // Un seul élément
+        // on vient de supprimer le dernier élèment
         liste->tete = NULL;
         liste->queue = NULL;
     }
 
-    free(liste->tete);
+    free(tmp);
 
     return OK;
 }
@@ -242,28 +221,20 @@ Status supprimerEnQueue(Liste* liste, Info* info) {
     if (estVide(liste))
         return LISTE_VIDE;
 
-    // Renvoie de l'élément stocké à l'en-queue
+    // Renvoie de l'élément stocké en queue
     *info = liste->queue->info;
 
-    // Plusieurs éléments
-    /*
-    if (liste->queue) {
-        liste->tete = NULL;
-        liste->queue = NULL;
-    } else
-        liste->tete = NULL;
-    */
+    Element* tmp =  liste->queue;
 
     if (longueur(liste) != 1) {
         liste->queue = liste->queue->precedent;
         liste->queue->suivant = NULL;
     } else {
-        // Un seul élément
         liste->tete = NULL;
         liste->queue = NULL;
     }
 
-    free(liste->queue);
+    free(tmp);
 
     return OK;
 }
