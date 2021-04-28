@@ -76,7 +76,7 @@ void afficher(const Liste* liste, Mode mode) {
 
 Status insererEnTete(Liste* liste, const Info* info) {
     Element* element = malloc(sizeof(Element));
-    if(element == NULL) return MEMOIRE_INSUFFISANTE;
+    if(!element) return MEMOIRE_INSUFFISANTE;
 
     //ajout des attributs de l'élément
     element->info = *info;
@@ -163,27 +163,30 @@ void supprimerSelonCritere(Liste* liste, bool (*critere)(size_t, const Info* )) 
     if (!estVide(liste)) {
 
         size_t position = 0;
+        Element* precedent = NULL;
         Element* element = liste->tete;
-
-        while(element) {
-
-            if(critere(position, &(element->info))) {
-                //s'il y a un précédent sinon on est à la tête
-                if (element->precedent) {
-                    element->precedent->suivant = element->suivant;
-                } else {
-                    liste->tete = liste->tete->suivant;
+        Element* suivant = NULL;
+        while (element != NULL) {
+            precedent = element->precedent;
+            suivant = element->suivant;
+            if (critere(position, &(element->info))) {
+                if (precedent != NULL) {
+                    precedent->suivant = suivant;
                 }
-                //s'il y a un suivant sinon on est à la queue
-                if (element->suivant) {
-                    element->suivant->precedent = element->precedent;
-                } else {
-                    liste->queue = liste->queue->precedent;
+                if (suivant != NULL) {
+                    suivant->precedent = precedent;
                 }
+                //si la tête ou la queue est supprimée il faut mettre à jour la liste
+                if (element == liste->queue){
+                    liste->queue = precedent;
+                }
+                if (element == liste->tete){
+                    liste->tete = suivant;
+                }
+                free(element);
             }
-            Element* tmp = element;
-            element = element->suivant;
-            free(tmp);
+            element = suivant;
+            ++position;
         }
     }
 }

@@ -28,7 +28,7 @@ int main() {
     if (estVide(ma_liste)) {
         printf("La liste est vide !\n");
     } else {
-        printf("La liste contient %llu element(s)\n", longueur(ma_liste));
+        printf("La liste contient %zu element(s)\n", longueur(ma_liste));
     }
 
     //Remplit la liste avec les valeurs [1 à 10]
@@ -38,7 +38,7 @@ int main() {
     }
 
 
-    printf("Longueur de la premiere liste : %llu\n", longueur(ma_liste));
+    printf("Longueur de la premiere liste : %zu\n", longueur(ma_liste));
 
     printf("premiere liste de tete a queue: ");
     afficher(ma_liste, FORWARD);
@@ -78,7 +78,7 @@ int main() {
     printf("premiere liste de queue a tete apres l'ajout d'un zero: ");
     afficher(ma_liste, BACKWARD);
 
-    printf("Longueur : %llu\n", longueur(ma_liste));
+    printf("Longueur : %zu\n", longueur(ma_liste));
 
     printf("\n-----------TEST-EGAUX------------------------------------------\n\n");
     //Ajoute les nombres impairs jusqu'à 7 pour tester l'équalité des listes
