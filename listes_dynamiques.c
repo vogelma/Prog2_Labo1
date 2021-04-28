@@ -191,7 +191,7 @@ bool sontEgales(const Liste *liste1, const Liste *liste2) {
     return true;
 }
 
-void vider(Liste *liste, size_t position) { // TODO : Check extensif du comportement
+/*void vider(Liste *liste, size_t position) { // TODO : Check extensif du comportement
     if (estVide(liste)) return;
 
     size_t pos = 0;
@@ -219,4 +219,16 @@ void vider(Liste *liste, size_t position) { // TODO : Check extensif du comporte
         element = element->suivant;
         free(a_supprimer);
     }
+}*/
+void vider(Liste* liste, size_t position) {
+    //rien est fait si la position se trouve après la fin de la liste
+    if (position < longueur(liste)) {
+
+        Info tmp = 0;
+        //supprime la queue jusqu'à atteindre la position
+        for(size_t i = longueur(liste); i > position ; --i){
+            supprimerEnQueue(liste, &tmp);
+        }
+    }
+
 }
