@@ -20,7 +20,6 @@ bool est_pair(size_t position, const Info* info) {
 }
 
 int main() {
-
     printf("-----------TEST-INITIALISATION-INSERTION-AFFICHAGE-------------\n\n");
     Liste* ma_liste = initialiser();
     Info info = 0;
@@ -28,17 +27,16 @@ int main() {
     if (estVide(ma_liste)) {
         printf("La liste est vide !\n");
     } else {
-        printf("La liste contient %llu element(s)\n", longueur(ma_liste));
+        printf("La liste contient %zu element(s)\n", longueur(ma_liste));
     }
 
     //Remplit la liste avec les valeurs [1 à 10]
     for (Info i = 1; i <= 10; ++i) {
-        info = i;
-        insererEnQueue(ma_liste, info);
+        insererEnQueue(ma_liste, &i);
     }
 
 
-    printf("Longueur de la premiere liste : %llu\n", longueur(ma_liste));
+    printf("Longueur de la premiere liste : %zu\n", longueur(ma_liste));
 
     printf("premiere liste de tete a queue: ");
     afficher(ma_liste, FORWARD);
@@ -73,24 +71,24 @@ int main() {
 
     //Insère un élément en tête de liste
     info = 0;
-    insererEnTete(ma_liste, info);
+    insererEnTete(ma_liste, &info);
 
     printf("premiere liste de queue a tete: ");
     afficher(ma_liste, BACKWARD);
 
-    printf("Longueur : %llu\n", longueur(ma_liste));
+    printf("Longueur : %zu\n", longueur(ma_liste));
 
     printf("\n-----------TEST-EGAUX------------------------------------------\n\n");
     //Ajoute les nombres impairs jusqu'à 7 pour tester l'équalité des listes
     Liste *ma_deuxieme_liste = initialiser();
     info = 0;
-    insererEnQueue(ma_deuxieme_liste, info);
+    insererEnQueue(ma_deuxieme_liste, &info);
     info = 3;
-    insererEnQueue(ma_deuxieme_liste, info);
+    insererEnQueue(ma_deuxieme_liste, &info);
     info = 5;
-    insererEnQueue(ma_deuxieme_liste, info);
+    insererEnQueue(ma_deuxieme_liste, &info);
     info = 7;
-    insererEnQueue(ma_deuxieme_liste, info);
+    insererEnQueue(ma_deuxieme_liste, &info);
 
     printf("Est ce que les deux listes suivantes sont equales?\n");
     afficher(ma_liste, FORWARD);
@@ -99,7 +97,7 @@ int main() {
     if (sontEgales(ma_liste, ma_deuxieme_liste)) {
         printf("Les deux listes sont egales\n");
         info = 9;
-        insererEnTete(ma_deuxieme_liste, info);
+        insererEnTete(ma_deuxieme_liste, &info);
     } else {
         printf("Les deux listes ne sont  pas egales\n");
     }
