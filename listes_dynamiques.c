@@ -43,7 +43,7 @@ size_t longueur(const Liste *liste) {
     return taille;
 }
 
-Status insererEnQueue(Liste *liste, const Info *info) {
+Status insererEnQueue(Liste *liste, const Info *info) { // TODO : 0 ou 1 élément + 1 ?
     Element* element = malloc(sizeof(Element));
     if (!element) return MEMOIRE_INSUFFISANTE;
 
@@ -154,7 +154,7 @@ Status supprimerEnQueue(Liste *liste, Info *info) { // TODO : Vérifier comporte
     return OK;
 }
 
-Status insererEnTete(Liste *liste, const Info *info) {
+Status insererEnTete(Liste *liste, const Info *info) { // TODO : Comportement quand 0 ou 1 élément correct ?
     Element* nouveau = malloc(sizeof(Element));
 
     if (nouveau == NULL) {
@@ -191,7 +191,7 @@ bool sontEgales(const Liste *liste1, const Liste *liste2) {
     return true;
 }
 
-void vider(Liste *liste, size_t position) {
+void vider(Liste *liste, size_t position) { // TODO : Check extensif du comportement
     if (estVide(liste)) return;
 
     size_t pos = 0;
