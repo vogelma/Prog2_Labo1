@@ -13,12 +13,12 @@
  -----------------------------------------------------------------------------------
 */
 
+#include "listes_dynamiques.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include "listes_dynamiques.h"
 
 Liste* initialiser() {
-    Liste *liste = malloc(sizeof(Liste));
+    Liste* liste = malloc(sizeof(Liste));
 
     liste->tete = NULL;
     liste->queue = NULL;
@@ -47,25 +47,28 @@ size_t longueur(const Liste* liste) {
 }
 
 void afficher(const Liste* liste, Mode mode) {
-    Element* elemActuel;
+    Element* element;
 
     printf("[");
+
     if (!estVide(liste)) {
         if (mode == FORWARD) {
-            elemActuel = liste->tete;
-            while (elemActuel != NULL) {
-                printf("%d", elemActuel->info);
-                if (elemActuel != liste->queue)
-                    printf(", ");
-                elemActuel = elemActuel->suivant;
+            element = liste->tete;
+        } else {
+            element = liste->queue;
+        }
+
+        while(element) {
+            printf("%d", element->info);
+
+            if (mode == FORWARD) {
+                element = element->suivant;
+            } else {
+                element = element->precedent;
             }
-        } else if (mode == BACKWARD) {
-            elemActuel = liste->queue;
-            while (elemActuel != NULL) {
-                printf("%d", elemActuel->info);
-                if (elemActuel != liste->tete)
-                    printf(", ");
-                elemActuel = elemActuel->precedent;
+
+            if (element) {
+                printf(", ");
             }
         }
     }
@@ -74,62 +77,56 @@ void afficher(const Liste* liste, Mode mode) {
 
 Status insererEnTete(Liste* liste, const Info* info) {
 
-    Element* newElement = malloc(sizeof(Element));
-    if(newElement == NULL)
-        return MEMOIRE_INSUFFISANTE;
+    Element* element = malloc(sizeof(Element));
+    if(element == NULL) return MEMOIRE_INSUFFISANTE;
 
     //ajout des attribut de l'élèment
-    newElement->info = info;
-    newElement->precedent = NULL;
+    element->info = *info;
+    element->precedent = NULL;
 
     //si un élèment est déjà dans la liste
     if(!estVide(liste)) {
-        newElement->suivant = liste->tete;
-        liste->tete->precedent = newElement;
+        element->suivant = liste->tete;
+        liste->tete->precedent = element;
     } else {
-        newElement->suivant = NULL;
-        liste->queue = newElement;
+        element->suivant = NULL;
+        liste->queue = element;
     }
     //maj de la tete de la liste
-    liste->tete = newElement;
+    liste->tete = element;
 
     return OK;
 }
 
 Status insererEnQueue(Liste* liste, const Info* info) {
 
-    Element* newElement = malloc(sizeof(Element));
-    if(!newElement)
-        return MEMOIRE_INSUFFISANTE;
+    Element* element = malloc(sizeof(Element));
+    if(!element) return MEMOIRE_INSUFFISANTE;
 
     //ajout des attribut de l'élèment
-    newElement->info = info;
-    newElement->precedent = liste->queue;
-    newElement->suivant = NULL;
+    element->info = *info;
+    element->suivant = NULL;
 
     //si un élèment est déjà dans la liste
     if(!estVide(liste)) {
-        newElement->precedent = liste->queue;
-        liste->queue->suivant = newElement;
+        element->precedent = liste->queue;
+        liste->queue->suivant = element;
     } else {
-        newElement->precedent = NULL;
-        liste->tete = newElement;
-
+        element->precedent = NULL;
+        liste->tete = element;
     }
     //maj de la queue de la liste
-    liste->queue = newElement;
+    liste->queue = element;
 
     return OK;
 
 }
 
 Status supprimerEnTete(Liste* liste, Info* info) {
-    if (estVide(liste))
-        return LISTE_VIDE;
+    if (estVide(liste)) return LISTE_VIDE;
 
     // Renvoie de l'élément stocké en tête
     *info = liste->tete->info;
-
     Element* tmp =  liste->tete;
 
     //mise à jour de la tete
@@ -173,32 +170,27 @@ void supprimerSelonCritere(Liste* liste, bool (*critere)(size_t, const Info* )) 
     if (!estVide(liste)) {
 
         size_t position = 0;
-        Element* precedent = NULL;
         Element* element = liste->tete;
-        Element* suivant = NULL;
 
-        while (element != NULL) {
-            precedent = element->precedent;
-            suivant = element->suivant;
-            if (critere(position, &(element->info))) {
-                if (precedent != NULL) {
-                    precedent->suivant = suivant;
-                }
-                if (suivant != NULL) {
-                    suivant->precedent = precedent;
-                }
-                //si la tete ou la queue est supprimée il faut mettre à jour la liste
-                if (element == liste->queue){
-                    liste->queue = precedent;
-                }
-                if (element == liste->tete){
-                    liste->tete = suivant;
-                }
+        while(element) {
 
-                free(element);
+            if(critere(position, &(element->info))) {
+                //s'il y a un précèdent sinon, on est à la tête
+                if (element->precedent) {
+                    element->precedent->suivant = element->suivant;
+                } else {
+                    liste->tete = liste->tete->suivant;
+                }
+                //s'il y a un suivant sinon, on est à la queue
+                if (element->suivant) {
+                    element->suivant->precedent = element->precedent;
+                } else {
+                    liste->queue = liste->queue->precedent;
+                }
             }
-            element = suivant;
-            ++position;
+            Element* tmp = element;
+            element = element->suivant;
+            free(tmp);
         }
     }
 }
@@ -224,14 +216,14 @@ bool sontEgales(const Liste* liste1, const Liste* liste2) {
     if (longueur(liste1) != longueur(liste2))
         return false;
 
-    Element* suivant1 = liste1->tete;
-    Element* suivant2 = liste2->tete;
+    Element* elem1 = liste1->tete;
+    Element* elem2 = liste2->tete;
 
-    while (suivant1 != NULL) {
-        if (suivant1->info != suivant2->info)
+    while (elem1 != NULL) {
+        if (elem1->info != elem2->info)
             return false;
-        suivant1 = suivant1->suivant;
-        suivant2 = suivant2->suivant;
+        elem1 = elem1->suivant;
+        elem2 = elem2->suivant;
     }
 
     return true;

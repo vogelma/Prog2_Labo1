@@ -6,14 +6,14 @@
 
  Description    : programme de test de  la librairie
 
- Remarque(s)    : -
+ Remarque(s)    : Le programme a le fonctionnement attendu.
 
  Compilateur    : Mingw-w64 gcc 8.1.0
  -----------------------------------------------------------------------------------
 */
-#include <stdio.h>
-#include <stdlib.h>
 #include "listes_dynamiques.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 bool est_pair(size_t position, const Info* info) {
     return (*info % 2 == 0);
@@ -34,7 +34,7 @@ int main() {
     //Remplit la liste avec les valeurs [1 à 10]
     for (Info i = 1; i <= 10; ++i) {
         info = i;
-        insererEnQueue(ma_liste, info);
+        insererEnQueue(ma_liste, &info);
     }
 
 
@@ -73,9 +73,9 @@ int main() {
 
     //Insère un élément en tête de liste
     info = 0;
-    insererEnTete(ma_liste, info);
+    insererEnTete(ma_liste, &info);
 
-    printf("premiere liste de queue a tete: ");
+    printf("premiere liste de queue a tete apres l'ajout d'un zero: ");
     afficher(ma_liste, BACKWARD);
 
     printf("Longueur : %llu\n", longueur(ma_liste));
@@ -84,13 +84,13 @@ int main() {
     //Ajoute les nombres impairs jusqu'à 7 pour tester l'équalité des listes
     Liste *ma_deuxieme_liste = initialiser();
     info = 0;
-    insererEnQueue(ma_deuxieme_liste, info);
+    insererEnQueue(ma_deuxieme_liste, &info);
     info = 3;
-    insererEnQueue(ma_deuxieme_liste, info);
+    insererEnQueue(ma_deuxieme_liste, &info);
     info = 5;
-    insererEnQueue(ma_deuxieme_liste, info);
+    insererEnQueue(ma_deuxieme_liste, &info);
     info = 7;
-    insererEnQueue(ma_deuxieme_liste, info);
+    insererEnQueue(ma_deuxieme_liste, &info);
 
     printf("Est ce que les deux listes suivantes sont equales?\n");
     afficher(ma_liste, FORWARD);
@@ -99,7 +99,7 @@ int main() {
     if (sontEgales(ma_liste, ma_deuxieme_liste)) {
         printf("Les deux listes sont egales\n");
         info = 9;
-        insererEnTete(ma_deuxieme_liste, info);
+        insererEnTete(ma_deuxieme_liste, &info);
     } else {
         printf("Les deux listes ne sont  pas egales\n");
     }
